@@ -1,4 +1,3 @@
-// controllers/vending-machine.controller.ts
 import { Controller, Get, Post, Body, Put, Delete, Param } from '@nestjs/common';
 import { VendingMachineService } from './vending-machine.service';
 import { ProdutoDto } from './produto.dto';
