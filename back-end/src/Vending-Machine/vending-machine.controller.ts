@@ -1,10 +1,14 @@
 import { Controller, Get, Post, Body, Put, Delete, Param } from '@nestjs/common';
 import { VendingMachineService } from './vending-machine.service';
 import { ProdutoDto } from './produto.dto';
+import { PagamentoService } from './pagamento.service';
 
 @Controller('produtos')
 export class VendingMachineController {
-  constructor(private readonly vendingMachineService: VendingMachineService) {}
+  constructor(
+    private readonly vendingMachineService: VendingMachineService,
+    private readonly pagamentoService: PagamentoService,
+  ) {}
 
   @Get()
   getProdutos() {
@@ -31,7 +35,11 @@ export class VendingMachineController {
     return this.vendingMachineService.excluirProduto(idProduto);
   }
 
-  // Novos produtos
+  @Post(':idProduto/comprar')
+  comprarProduto(@Param('idProduto') idProduto: number, @Body('metodoPagamento') metodoPagamento: string) {
+    return this.vendingMachineService.comprarProduto(idProduto, metodoPagamento);
+  }
+
   @Get('agua-mineral')
   getAguaMineral() {
     return this.vendingMachineService.getProdutoPorNome('Água Mineral');

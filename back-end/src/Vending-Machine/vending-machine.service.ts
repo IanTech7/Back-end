@@ -1,14 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProdutoDto } from './produto.dto';
+import { PagamentoService } from './pagamento.service';
 
 @Injectable()
 export class VendingMachineService {
-  getProdutos() {
-      throw new Error('Method not implemented.');
-  }
-  getProduto(idProduto: number) {
-      throw new Error('Method not implemented.');
-  }
   private produtos: ProdutoDto[] = [
     { id: 1, nome: 'Refrigerante', preco: 2.5, quantidade: 10 },
     { id: 2, nome: 'Salgadinho', preco: 1.8, quantidade: 15 },
@@ -17,8 +12,14 @@ export class VendingMachineService {
     { id: 5, nome: 'Energético', preco: 5.0, quantidade: 5 },
   ];
 
-  getProdutoPorNome(nome: string) {
-    const produto = this.produtos.find((p) => p.nome.toLowerCase() === nome.toLowerCase());
+  constructor(private readonly pagamentoService: PagamentoService) {}
+
+  getProdutos() {
+    return this.produtos;
+  }
+
+  getProduto(id: number) {
+    const produto = this.produtos.find((p) => p.id === id);
     if (!produto) {
       throw new NotFoundException('Produto não encontrado');
     }
@@ -68,4 +69,23 @@ export class VendingMachineService {
     this.produtos.splice(index, 1);
     return { mensagem: 'Produto excluído com sucesso' };
   }
-}
+
+  comprarProduto(idProduto: number, metodoPagamento: string) {
+    const produto = this.getProduto(idProduto);
+    if (produto.quantidade > 0) {
+      const mensagemPagamento = this.pagamentoService.realizarPagamento(produto.preco, metodoPagamento);
+      if (mensagemPagamento.includes('realizado com sucesso')) {
+        produto.quantidade--;
+        return { mensagem: `Compra de ${produto.nome} realizada com sucesso. ${mensagemPagamento}` };
+      } else {
+        throw new Error(`Falha ao realizar o pagamento. ${mensagemPagamento}`);
+      }
+    } else {
+      throw new Error('Produto fora de estoque');
+    }
+  }
+
+  getProdutoPorNome(nome: string) {
+    const produto = this.produtos.find((p) => p.nome.toLowerCase() === nome.toLowerCase());
+    if (!produto) {
+      throw new NotFoundException('Produto não encontrado');
