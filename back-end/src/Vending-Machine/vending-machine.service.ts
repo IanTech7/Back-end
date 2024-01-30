@@ -88,4 +88,8 @@ export class VendingMachineService {
   getProdutoPorNome(nome: string) {
     const produto = this.produtos.find((p) => p.nome.toLowerCase() === nome.toLowerCase());
     if (!produto) {
-      throw new NotFoundException('Produto não encontrado');
+      throw new NotFoundException('Produto não encontrado'); 
+    }
+  }
+}
+
