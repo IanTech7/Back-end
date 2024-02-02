@@ -1,0 +1,31 @@
+{
+  "name": "vending-machine",
+  "version": "1.0.0",
+  "description": "API for a Vending Machine",
+  "main": "dist/main.js",
+  "scripts": {
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "build": "nest build",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:e2e": "jest --config jest-e2e.json"
+  },
+  "author": "Seu Nome",
+  "license": "MIT",
+  "dependencies": {
+    "@nestjs/common": "^8.0.0",
+    "@nestjs/core": "^8.0.0",
+    "@nestjs/platform-express": "^8.0.0",
+    "rxjs": "^7.3.0"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^8.0.0",
+    "@nestjs/testing": "^8.0.0",
+    "@types/jest": "^27.0.0",
+    "jest": "^27.0.0",
+    "supertest": "^6.1.3",
+    "ts-jest": "^27.0.0",
+    "typescript": "^4.4.3"
+  }
+}

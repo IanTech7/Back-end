@@ -21,9 +21,9 @@ export class VendingMachineController {
   }
 
   @Post()
-  criarProduto(@Body() novoProduto: ProdutoDto) {
-    return this.vendingMachineService.criarProduto(novoProduto);
-  }
+   criarProduto(@Body() novoProduto: ProdutoDto) {
+     return this.vendingMachineService.criarProduto(novoProduto);
+   }
 
   @Put(':idProduto')
   atualizarProduto(@Param('idProduto') idProduto: number, @Body() produtoAtualizado: ProdutoDto) {
@@ -37,7 +37,20 @@ export class VendingMachineController {
 
   @Post(':idProduto/comprar')
   comprarProduto(@Param('idProduto') idProduto: number, @Body('metodoPagamento') metodoPagamento: string) {
-    return this.vendingMachineService.comprarProduto(idProduto, metodoPagamento);
+    const produto = this.vendingMachineService.getProduto(idProduto);
+
+    if (produto.quantidade > 0) {
+      const mensagemPagamento = this.pagamentoService.realizarPagamento(produto.preco, metodoPagamento);
+
+      if (mensagemPagamento.includes('realizado com sucesso')) {
+        produto.quantidade--;
+        return `Compra de ${produto.nome} realizada com sucesso. ${mensagemPagamento}`;
+      } else {
+        throw new Error(`Falha ao realizar o pagamento. ${mensagemPagamento}`);
+      }
+    } else {
+      throw new Error('Produto fora de estoque');
+    }
   }
 
   @Get('agua-mineral')
